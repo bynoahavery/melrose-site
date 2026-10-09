@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#000000">
+  <title>Melrose, Clovelly — Private viewing</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000000'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' text-anchor='middle' fill='%23ffffff'%3EM%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&family=Libre+Caslon+Text:ital,wght@1,400&family=Marcellus&display=swap">
+  <link rel="stylesheet" href="/styles.css">
+  <!--PREVIEW_HEAD-->
+</head>
+<body class="is-booting">
+
+  <!-- Sign-in (shown until the server confirms a valid session) -->
+  <section class="login" id="login" hidden aria-labelledby="login-heading">
+    <div class="login__brand">
+      <p class="login__wordmark" aria-hidden="true">Melrose</p>
+      <p class="login__place">Clovelly</p>
+    </div>
+    <div class="login__panel">
+      <form class="login__form" id="login-form" novalidate>
+        <h2 id="login-heading">Sign in to view the home</h2>
+        <p class="login__lede">Enter your full name and the passcode your agent gave you.</p>
+        <!--PREVIEW_NOTE-->
+
+        <div class="field-row">
+          <div class="field">
+            <label for="first-name">First name</label>
+            <input id="first-name" name="firstName" type="text" autocomplete="given-name" maxlength="40" required>
+          </div>
+          <div class="field">
+            <label for="last-name">Last name</label>
+            <input id="last-name" name="lastName" type="text" autocomplete="family-name" maxlength="40" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="passcode">Passcode</label>
+          <input id="passcode" name="passcode" type="password" autocomplete="current-password" required>
+        </div>
+
+        <p class="form-error" id="login-error" role="alert" aria-live="assertive"></p>
+        <button class="button button--wide" type="submit" id="login-submit">View the home</button>
+
+        <p class="login__notice">
+          By signing in, your name and the time you signed in are recorded
+          and shared with the selling agent.
+        </p>
+      </form>
+    </div>
+  </section>
+
+  <!-- Property (filled from /api/content after sign-in) -->
+  <main id="site" hidden>
+    <header class="topbar">
+      <span class="topbar__mark" id="topbar-mark">Melrose</span>
+      <div class="topbar__viewer">
+        <span>Viewing as <strong id="viewer-name"></strong></span>
+        <button class="text-button" type="button" data-signout>Sign out</button>
+      </div>
+    </header>
+
+    <figure class="hero" id="hero">
+      <div class="hero__overlay">
+        <div class="hero__inner">
+          <div class="hero__name">
+            <h1 class="hero__title" id="property-name">Melrose</h1>
+            <p class="hero__address" id="property-address"></p>
+          </div>
+          <div class="agent" id="agent" hidden>
+            <p class="agent__label" id="agent-label"></p>
+            <p class="agent__line"><span id="agent-name"></span> - <a id="agent-phone"></a></p>
+          </div>
+        </div>
+      </div>
+    </figure>
+
+    <div class="wrap intro">
+      <h2 class="intro__title" id="copy-title"></h2>
+      <div class="intro__body">
+        <ul class="stats" id="copy-stats" aria-label="Key details"></ul>
+        <p id="copy-intro"></p>
+      </div>
+    </div>
+
+    <section class="section" aria-labelledby="h-interiors">
+      <div class="wrap chapter">
+        <div class="chapter__text">
+          <h2 class="section-title" id="h-interiors"></h2>
+          <p id="copy-interiors"></p>
+        </div>
+        <div class="chapter__photos gallery" data-group="interiors"></div>
+      </div>
+    </section>
+
+    <section class="section section--tone" aria-labelledby="h-outdoors">
+      <div class="wrap chapter">
+        <div class="chapter__text">
+          <h2 class="section-title" id="h-outdoors"></h2>
+          <p id="copy-outdoors"></p>
+        </div>
+        <div class="chapter__photos gallery" data-group="outdoors"></div>
+      </div>
+    </section>
+
+    <section class="feature-band" aria-labelledby="h-features">
+      <img class="feature-band__image" id="features-backdrop" alt="" aria-hidden="true" decoding="async" loading="lazy">
+      <div class="wrap feature-band__inner">
+        <h2 class="section-title" id="h-features"></h2>
+        <ul class="features" id="copy-features"></ul>
+      </div>
+    </section>
+
+    <section class="section section--tone" id="section-more" aria-labelledby="h-more">
+      <div class="wrap chapter chapter--full">
+        <div class="chapter__text">
+          <h2 class="section-title" id="h-more"></h2>
+          <p id="copy-more"></p>
+        </div>
+        <div class="chapter__photos gallery" data-group="more"></div>
+      </div>
+    </section>
+
+    <section class="section" id="section-floorplan" aria-labelledby="h-floorplan">
+      <div class="wrap">
+        <div class="floorplan-head">
+          <h2 class="section-title" id="h-floorplan"></h2>
+          <a class="text-button" id="floorplan-pdf" download>Download floor plan (PDF)</a>
+        </div>
+        <div class="gallery" data-group="floorplan"></div>
+      </div>
+    </section>
+
+    <section class="section location" aria-labelledby="h-location">
+      <div class="wrap">
+        <h2 class="section-title" id="h-location"></h2>
+        <div class="gallery" data-group="location"></div>
+        <p class="closing" id="copy-closing"></p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="wrap disclaimer-wrap" id="disclaimer-wrap" hidden><p class="disclaimer" id="disclaimer"></p></div>
+      <div class="wrap">
+        <span class="footer__mark" id="footer-mark">Melrose</span>
+        <button class="text-button" type="button" data-signout>Sign out</button>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Full-screen slideshow -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lb-caption" hidden>
+    <div class="lightbox__bar">
+      <span class="lightbox__count" id="lb-count" aria-live="polite"></span>
+      <button class="icon-button lightbox__close" type="button" id="lb-close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        Close
+      </button>
+    </div>
+    <div class="lightbox__stage" id="lb-stage">
+      <button class="icon-button lightbox__nav lightbox__nav--prev" type="button" id="lb-prev" aria-label="Previous photo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <img class="lightbox__img" id="lb-img" alt="">
+      <button class="icon-button lightbox__nav lightbox__nav--next" type="button" id="lb-next" aria-label="Next photo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+    <p class="lightbox__caption" id="lb-caption"></p>
+  </div>
+
+  <!--PREVIEW_BODY-->
+  <script src="/app.js"></script>
+</body>
+</html>

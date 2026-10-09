@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Melrose, Clovelly — Visitor dashboard</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000000'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' text-anchor='middle' fill='%23ffffff'%3EM%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&family=Libre+Caslon+Text:ital,wght@1,400&family=Marcellus&display=swap">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/dashboard.css">
+  <style>
+    .admin-login { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: var(--gutter); }
+    .admin-login .login__form { max-width: 22rem; }
+    .admin-login .topbar__mark { display: block; font-size: 3rem; margin-bottom: 2rem; }
+    .admin-main { padding-bottom: 4rem; }
+    .admin-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem 2rem; padding: clamp(1.5rem, 4vw, 3rem) 0 1.75rem; }
+    .admin-head h1 { font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 4.4vw, 3.5rem); line-height: 1.05; margin: 0; }
+    .admin-head p { margin: 0.4rem 0 0; color: var(--muted); font-size: 0.875rem; }
+    .admin-actions { display: flex; gap: 1.25rem; align-items: center; flex-wrap: wrap; }
+    #dashboard { max-width: 48rem; }
+  </style>
+</head>
+<body class="is-booting">
+  <section class="admin-login" id="login" hidden>
+    <form class="login__form" id="login-form" novalidate>
+      <span class="topbar__mark">Melrose</span>
+      <h2>Visitor dashboard</h2>
+      <p class="login__lede">Enter the dashboard passcode to see who has signed in.</p>
+      <div class="field">
+        <label for="passcode">Dashboard passcode</label>
+        <input id="passcode" type="password" autocomplete="current-password" required>
+      </div>
+      <p class="form-error" id="login-error" role="alert"></p>
+      <button class="button button--wide" type="submit" id="login-submit">Open dashboard</button>
+    </form>
+  </section>
+
+  <main id="site" class="admin-main" hidden>
+    <header class="topbar">
+      <span class="topbar__mark">Melrose</span>
+      <div class="topbar__viewer"><button class="text-button" type="button" id="signout">Sign out</button></div>
+    </header>
+    <div class="wrap">
+      <div class="admin-head">
+        <div>
+          <h1>Sign-ins</h1>
+          <p id="updated" aria-live="polite"></p>
+        </div>
+        <div class="admin-actions">
+          <button class="text-button" type="button" id="refresh">Refresh</button>
+        </div>
+      </div>
+      <div id="dashboard"></div>
+    </div>
+  </main>
+
+  <script src="/dashboard.js"></script>
+  <script>
+  (() => {
+    const $ = (s) => document.querySelector(s);
+    let data = null, timer = null;
+
+    async function load() {
+      const res = await fetch('/api/admin', { credentials: 'same-origin', cache: 'no-store' });
+      if (res.status === 401) return null;
+      if (!res.ok) throw new Error(`Dashboard request failed (${res.status})`);
+      return res.json();
+    }
+    function show(d) {
+      data = d;
+      $('#login').hidden = true; $('#site').hidden = false; document.body.classList.remove('is-booting');
+      window.renderDashboard($('#dashboard'), { signIns: d.signIns });
+      $('#updated').textContent = `Updated ${new Date().toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit' })} · refreshes every minute`;
+      clearInterval(timer); timer = setInterval(refresh, 60000);
+    }
+    function showLogin(msg = '') {
+      clearInterval(timer);
+      $('#site').hidden = true; $('#login').hidden = false; document.body.classList.remove('is-booting');
+      $('#login-error').textContent = msg; $('#passcode').focus();
+    }
+    async function refresh() {
+      try {
+        const d = await load();
+        if (!d) return showLogin();
+        show(d);
+      } catch (e) { $('#updated').textContent = e.message; }
+    }
+
+    $('#login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = $('#login-submit'); btn.disabled = true; btn.textContent = 'Opening…';
+      try {
+        const res = await fetch('/api/admin/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify({ passcode: $('#passcode').value }) });
+        const r = await res.json().catch(() => ({}));
+        if (!res.ok) { $('#login-error').textContent = r.error || 'Sign-in failed.'; $('#passcode').select(); return; }
+        $('#passcode').value = '';
+        await refresh();
+      } catch { $('#login-error').textContent = 'Could not reach the server.'; }
+      finally { btn.disabled = false; btn.textContent = 'Open dashboard'; }
+    });
+    $('#refresh').addEventListener('click', refresh);
+    $('#signout').addEventListener('click', async () => { await fetch('/api/admin/logout', { method: 'POST' }).catch(() => {}); showLogin(); });
+
+    load().then((d) => (d ? show(d) : showLogin())).catch(() => showLogin('Could not reach the server. Refresh to try again.'));
+  })();
+  </script>
+</body>
+</html>
