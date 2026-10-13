@@ -45,12 +45,20 @@
     const halfSizes = '(max-width: 560px) 100vw, (max-width: 900px) 50vw, 33vw';
     const wideSizes = '(max-width: 900px) 100vw, 66vw';
     // Rhythm: one wide photo, then pairs; a lone photo at the end runs wide.
+    // Labelled photos (the location aerials) sit side by side, each named underneath.
+    const labelled = items.length > 1 && items.every(({ p }) => p.label);
     items.forEach(({ p, i }, n) => {
       const isLastOdd = n === items.length - 1 && (items.length - 1) % 2 === 1;
-      const wide = n === 0 || isLastOdd;
-      const btn = photoButton(p, i, { wide, sizes: wide ? wideSizes : halfSizes });
+      const wide = !labelled && (n === 0 || isLastOdd);
+      const btn = photoButton(p, i, { wide, sizes: wide ? wideSizes : '(max-width: 560px) 100vw, 50vw' });
       if (group === 'floorplan') btn.classList.add('photo--plan');
-      container.append(btn);
+      if (!p.label) { container.append(btn); return; }
+      const figure = document.createElement('figure');
+      figure.className = 'photo-figure' + (wide ? ' is-wide' : '');
+      btn.classList.remove('is-wide');
+      const caption = Object.assign(document.createElement('figcaption'), { textContent: p.label });
+      figure.append(btn, caption);
+      container.append(figure);
     });
   }
 
@@ -63,6 +71,9 @@
     text('#property-name', data.property.name);
     text('#topbar-mark', data.property.name);
     text('#footer-mark', data.property.footer || data.property.name);
+    const tagline = $('#property-tagline');
+    tagline.textContent = data.property.tagline || '';
+    tagline.hidden = !data.property.tagline;
     const address = $('#property-address');
     address.textContent = data.property.address || '';
     address.hidden = !data.property.address;

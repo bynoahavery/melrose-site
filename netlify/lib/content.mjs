@@ -4,6 +4,7 @@ export default {
     "name": "Melrose",
     "location": "Clovelly",
     "address": "4/26-28 Melrose Parade, Clovelly",
+    "tagline": "Light-Filled Designer Apartment",
     "footer": "Melrose, Clovelly"
   },
   "agent": {
@@ -97,6 +98,20 @@ export default {
       "group": "floorplan",
       "title": "Floor plan",
       "alt": "Floor plan showing the entry, kitchen (2.7 x 4.1 m), living and dining (5.3 x 5.3 m) opening to the balcony, bedroom 1 (3.9 x 3.3 m) and bedroom 2 (3.1 x 4.0 m), each with a robe, the bathroom, and a separate lock-up garage."
+    },
+    {
+      "id": "aerial-clovelly",
+      "group": "location",
+      "title": "Clovelly",
+      "label": "Clovelly",
+      "alt": "Aerial view looking east over Clovelly, with an arrow marking the building, Clovelly Beach and its long inlet beyond, and the open ocean on the horizon."
+    },
+    {
+      "id": "aerial-gordons-bay",
+      "group": "location",
+      "title": "Gordon's Bay",
+      "label": "Gordon's Bay",
+      "alt": "Aerial view looking north over Gordon's Bay, with an arrow marking the building, the bay's clear turquoise water below the headland, and Coogee Beach and the coastline beyond."
     }
   ],
   "featuresBackdrop": "dining"

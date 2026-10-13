@@ -66,10 +66,11 @@ body.is-booting main, body.is-booting .login { visibility: hidden; }
   font-family: var(--wordmark);
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(5rem, 13vw, 12.5rem);
-  line-height: 0.85;
+  font-size: clamp(2.375rem, 4.3vw, 4.75rem);
+  line-height: 1.05;
   letter-spacing: -0.01em;
   margin: 0;
+  text-wrap: balance;
 }
 .login__place { margin: 1.25rem 0 0; font-size: 1.125rem; color: rgba(255, 255, 255, 0.72); }
 
@@ -192,6 +193,10 @@ body.is-booting main, body.is-booting .login { visibility: hidden; }
   color: #ffffff;
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.25);
 }
+/* Tagline in the wordmark's place */
+.hero__title--tagline { font-size: clamp(1.625rem, 3.6vw, 3.25rem); line-height: 1.1; margin-bottom: 0; text-wrap: balance; }
+.hero__title--tagline + .hero__address { margin-top: 0.75rem; }
+.agent { flex-shrink: 0; }
 .hero__address {
   margin: 1rem 0 0;
   font-size: clamp(1rem, 1.4vw, 1.25rem);
@@ -363,6 +368,15 @@ body.is-booting main, body.is-booting .login { visibility: hidden; }
 }
 
 .location .photo { aspect-ratio: 16 / 9; }
+/* Labelled aerials: shown whole (4:3) so the marker arrow and the water both stay in frame */
+.photo-figure { margin: 0; }
+.location .photo-figure .photo { aspect-ratio: 4 / 3; }
+.photo-figure figcaption {
+  margin-top: 0.85rem;
+  font-family: var(--display);
+  font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+  line-height: 1.2;
+}
 /* Same size as the section text under "Inside" and "Outside" */
 .closing { max-width: 34em; margin: clamp(2rem, 4vw, 3rem) 0 0; }
 
